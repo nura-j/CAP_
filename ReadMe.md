@@ -42,6 +42,7 @@ The model and data preparation settings must match. To evaluate another layer, c
 | `--data_path` | Path to the processed JSON from `src/model_testing.py`. |
 | `--start_layer` | Layer at which the intervention begins. |
 | `--granularity` | `token_to_words`, `token_to_phrases`, or `random`. |
+| `--constituency_level` | Constituency tree depth used for `token_to_phrases` (default: `2`; aliases: `--phrase_level`, `--level`). |
 | `--grouping_protocol` | `mean`, `sum`, `max`, or `last_token`. |
 | `--component` | Optional activation component or hook name; omit it for the default component selection. |
 | `--k` | Number of top predictions used for the task metric. |

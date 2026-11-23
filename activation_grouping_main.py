@@ -28,11 +28,16 @@ def main():
     parser.add_argument('--k', type=int, default=1, help='K')
     parser.add_argument('--grouping_protocol', type=str, default='mean', help='Grouping protocol')
     parser.add_argument('--granularity', type=str, default='token_to_words', help='Granularity')
+    parser.add_argument('--constituency_level', '--phrase_level', '--level', dest='constituency_level',
+                        type=int, default=2,
+                        help='Constituency tree depth used for token-to-phrase grouping')
     parser.add_argument('--broadcast_cap', action='store_true',
                         help='Broadcast pooled value back to original positions to preserve shape')
     parser.add_argument('--batch_size', type=int, default=16, help='Batch size')
     parser.add_argument('--CARMA', type=bool, default=False)
     args = parser.parse_args()
+    if args.constituency_level < 0:
+        parser.error('--constituency_level must be non-negative')
 
     # Set random seed and device
     set_seed(args.seed)
@@ -96,7 +101,8 @@ def main():
                 max_length=max_length,
                 granularity=args.granularity,
                 model_name=args.model_name,
-                sentence=prompt
+                sentence=prompt,
+                constituency_level=args.constituency_level
             )
         part_ranges.append(r)
         ratios.append(ratio_reduction)
@@ -509,6 +515,7 @@ def main():
     # Log the summary results
     results_summary = summary_metrics(result_collection)
     results_summary['granularity'] = args.granularity
+    results_summary['constituency_level'] = args.constituency_level
     results_summary['start_layer'] = args.start_layer
     results_summary['component'] = args.component
     results_summary['grouping_protocol'] = args.grouping_protocol
